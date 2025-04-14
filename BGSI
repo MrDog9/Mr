@@ -1,0 +1,61 @@
+local rifts = game.workspace:WaitForChild("Rendered"):WaitForChild("Rifts")
+
+local function getTimestampWebhook()
+    return os.date("!%Y-%m-%dT%H:%M:%SZ")
+end
+
+local embedColor = 16711680
+
+local HttpService = game:GetService("HttpService")
+local webhookURL = "https://discord.com/api/webhooks/1361393269048869116/6EUHjjUjVPSL9Rp-ilJoKHfKJy2gPCx9LvDh-qSo5bkqTLa7ktOddCUnsfa4b8lAcReo"
+
+local function sendEggWebhook(egg, luck, time)
+    local data = {
+        username = "Egg Webhook",
+        avatar_url = "https://cdn.discordapp.com/avatars/1335683455471718412/a_dd829b3d91ebd074581b2719dd020ba4.gif?size=1024",
+        embeds = {
+            {
+                title = egg.." Egg!",
+                color = embedColor,
+                fields = {
+                    { name = "Egg", value = egg, inline = true },
+                    { name = "Luck", value = luck, inline = true },
+                    { name = "Time", value = time, inline = true }
+                },
+                footer = { text = "BGSI Script" },
+                timestamp = getTimestampWebhook()
+            }
+        }
+    }
+    local jsonData = HttpService:JSONEncode(data)
+    local reqFunc = (syn and syn.request) or (http and http.request) or request
+    if reqFunc then
+        pcall(function()
+            reqFunc({ Url = webhookURL, Method = "POST", Headers = { ["Content-Type"] = "application/json" }, Body = jsonData })
+        end)
+    else
+        warn("HTTP request function not found!")
+    end
+end
+
+local function riftEgg(egg, name)
+    local sfGui = egg:WaitForChild("Display"):WaitForChild("SurfaceGui")
+    local luck = sfGui:WaitForChild("Icon"):WaitForChild("Luck").Text
+    local time = sfGui:WaitForChild("Timer").Text
+    print(name, luck, time)
+    sendEggWebhook(name, luck, time)
+
+end
+
+rifts.ChildAdded:Connect(function(child)
+    print(child.Name)
+    if child.Name == "void-egg" then
+        riftEgg(child, "Void")
+    elseif child.Name == "nightmare-egg" then
+        riftEgg(child, "Nightmare")
+    elseif child.Name == "hell-egg" then
+        riftEgg(child, "Hell")
+    elseif child.Name == "rainbow-egg" then
+        riftEgg(child, "Rainbow")
+    end
+end)
