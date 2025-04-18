@@ -9,6 +9,8 @@ end
 
 local embedColor = 16711680
 
+local contentMessage = "@everyone"
+
 local HttpService = game:GetService("HttpService")
 
 local webhookURL = ""
@@ -23,6 +25,7 @@ local function sendEggWebhook(egg, luck, time, height)
     local data = {
         username = "Egg Webhook",
         avatar_url = "https://cdn.discordapp.com/avatars/1335683455471718412/a_dd829b3d91ebd074581b2719dd020ba4.gif?size=1024",
+        content = contentMessage,
         embeds = {
             {
                 title = egg.." Egg in ".. playerName.. "'s Server!",
@@ -61,14 +64,16 @@ end
 
 rifts.ChildAdded:Connect(function(child)
     print(child.Name)
-    if child.Name == "void-egg" then
-        riftEgg(child, "Void")
+    if child.Name == "pastel-egg" then
+        riftEgg(child, "Pastel")
+    --[[
     elseif child.Name == "nightmare-egg" then
         riftEgg(child, "Nightmare")
     elseif child.Name == "rainbow-egg" then
         riftEgg(child, "Rainbow")
-    elseif child.Name == "pastel-egg" then
-        riftEgg(child, "Pastel")
+    elseif child.Name == "void-egg" then
+        riftEgg(child, "Void")
+    ]]
     elseif child.Name == "bunny-egg" then
         riftEgg(child, "Bunny")
     end
