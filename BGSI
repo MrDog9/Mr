@@ -64,7 +64,7 @@ end
 
 rifts.ChildAdded:Connect(function(child)
     print(child.Name)
-    if child.Name == "pastel-egg" then
+    if child.Name == "event-2" then
         riftEgg(child, "Pastel")
     --[[
     elseif child.Name == "nightmare-egg" then
@@ -74,7 +74,7 @@ rifts.ChildAdded:Connect(function(child)
     elseif child.Name == "void-egg" then
         riftEgg(child, "Void")
     ]]
-    elseif child.Name == "bunny-egg" then
+    elseif child.Name == "event-1" then
         riftEgg(child, "Bunny")
     end
 end)
