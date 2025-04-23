@@ -40,6 +40,7 @@ local function getCorrectChunker()
             return v.Parent
         end
     end
+    return nil
 end
 
 local function esp(island)
@@ -103,6 +104,14 @@ local GetChunkerButton = MainTab:CreateButton({
     Name = "Get Chunker",
     Callback = function()
         correctChunkerVar = getCorrectChunker()
+        if correctChunkerVar ~= nil then
+            Rayfield:Notify({
+                Title = "Got Chunker Folder",
+                Content = "Auto Coins will work now.",
+                Duration = 6.5,
+                Image = 4483362458,
+             })
+        end
     end,
  })
 
