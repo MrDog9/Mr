@@ -3,6 +3,8 @@ local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
 local renderedFolder = game.workspace:WaitForChild("Rendered")
 
 local correctChunkerVar = nil
+local selectedRiftEgg = nil
+local selectedRiftChance = nil
 
 local CoinPickupEvent = game.ReplicatedStorage.Remotes.Pickups.CollectPickup
 
@@ -10,37 +12,51 @@ local CoinPickupEvent = game.ReplicatedStorage.Remotes.Pickups.CollectPickup
 local rifts = renderedFolder:WaitForChild("Rifts")
 
 local player = game.Players.LocalPlayer
-local playerName = player.Name
+local autoHatchEvent = player:WaitForChild("PlayerScripts"):WaitForChild("ClientScript"):WaitForChild("EggHatchRejoinActivation")
+-- autoHatchEvent:Fire("Pastel Egg")
 
 local AutoCoins = false
 
+local AutoRifts = false
 local riftEsp = false
 
 local function getCorrectChunker()
     for i, v in pairs(renderedFolder:GetDescendants()) do
         if v:FindFirstChild("Meshes/bgscoin17_Cube.001") or v:FindFirstChild("Meshes/bgscoin14") then
-            print("got chunker: ", v.Parent.Name)
-            return v.Parent
-        elseif v:FindFirstChild("Meshes/bgscoin15_Cube.002") then
-            print("got chunker: ", v.Parent.Name)
-            return v.Parent
-        elseif v:FindFirstChild("Meshes/no way this gem will look normal4") then
-            print("got chunker: ", v.Parent.Name)
-            return v.Parent
-        elseif v:FindFirstChild("Model") then
-            if v.Model:FindFirstChild("Model") then
-                print("got chunker: ", v.Parent.Name)
-                return v.Parent
-            elseif v.Model:FindFirstChild("Meshes/Gem Box1_Circle.005") then
+            if v.Parent.Locked == false then
                 print("got chunker: ", v.Parent.Name)
                 return v.Parent
             end
+        elseif v:FindFirstChild("Meshes/bgscoin15_Cube.002") then
+            if v.Parent.Locked == false then
+                print("got chunker: ", v.Parent.Name)
+                return v.Parent
+            end
+        elseif v:FindFirstChild("Meshes/no way this gem will look normal4") then
+            if v.Parent.Locked == false then
+                print("got chunker: ", v.Parent.Name)
+                return v.Parent
+            end
+        elseif v:FindFirstChild("Model") then
+            if v.Model:FindFirstChild("Model") then
+                if v.Parent.Locked == false then
+                    print("got chunker: ", v.Parent.Name)
+                    return v.Parent
+                end
+            elseif v.Model:FindFirstChild("Meshes/Gem Box1_Circle.005") then
+                if v.Parent.Locked == false then
+                    print("got chunker: ", v.Parent.Name)
+                    return v.Parent
+                end
+            end
         elseif v:FindFirstChild("Meshes/bgscoin14") then
-            print("got chunker: ", v.Parent.Name)
-            return v.Parent
+            if v.Parent.Locked == false then
+                print("got chunker: ", v.Parent.Name)
+                return v.Parent
+            end
         end
     end
-    return nil
+    return nil 
 end
 
 local function esp(island)
@@ -105,7 +121,7 @@ local GetChunkerButton = MainTab:CreateButton({
     Callback = function()
         correctChunkerVar = getCorrectChunker()
     end,
- })
+})
 
 local AutoCoinsToggle = MainTab:CreateToggle({
     Name = "Auto Collect Coins",
@@ -113,6 +129,15 @@ local AutoCoinsToggle = MainTab:CreateToggle({
     Flag = "AutoCoins", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
     Callback = function(Value)
         AutoCoins = Value
+    end,
+})
+
+local AutoRiftToggle = RiftsTab:CreateToggle({
+    Name = "Auto Rift",
+    CurrentValue = false,
+    Flag = "AutoRift", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+        AutoRifts = Value
     end,
 })
 
@@ -125,6 +150,10 @@ local RiftEspToggle = RiftsTab:CreateToggle({
     end,
 })
 
+rifts.ChildAdded:Connect(function(child)
+    print(child)
+end)
+
 while wait() do
     if AutoCoins then
         if correctChunkerVar ~= nil then
@@ -136,9 +165,13 @@ while wait() do
             print("Chunker not found.")
         end
     end
+    if AutoRifts then
+        
+    end
     if riftEsp then
         for i, v in pairs(rifts:GetChildren()) do
             esp(v)
         end
     end
 end
+
