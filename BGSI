@@ -39,9 +39,11 @@ local function getCorrectChunker()
             end
         elseif v:FindFirstChild("Model") then
             if v.Model:FindFirstChild("Model") then
-                if v.Parent.Locked == false then
-                    print("got chunker: ", v.Parent.Name)
-                    return v.Parent
+                if v.Name ~= "roayl-chest" then
+                    if v.Parent.Locked == false then
+                        print("got chunker: ", v.Parent.Name)
+                        return v.Parent
+                    end
                 end
             elseif v.Model:FindFirstChild("Meshes/Gem Box1_Circle.005") then
                 if v.Parent.Locked == false then
@@ -166,7 +168,7 @@ while wait() do
         end
     end
     if AutoRifts then
-        
+
     end
     if riftEsp then
         for i, v in pairs(rifts:GetChildren()) do
