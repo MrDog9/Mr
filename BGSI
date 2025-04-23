@@ -19,24 +19,24 @@ local riftEsp = false
 local function getCorrectChunker()
     for i, v in pairs(renderedFolder:GetDescendants()) do
         if v:FindFirstChild("Meshes/bgscoin17_Cube.001") or v:FindFirstChild("Meshes/bgscoin14") then
-            print("got chunker", v.Parent.Name)
+            print("got chunker: ", v.Parent.Name)
             return v.Parent
         elseif v:FindFirstChild("Meshes/bgscoin15_Cube.002") then
-            print("got chunker", v.Parent.Name)
+            print("got chunker: ", v.Parent.Name)
             return v.Parent
         elseif v:FindFirstChild("Meshes/no way this gem will look normal4") then
-            print("got chunker", v.Parent.Name)
+            print("got chunker: ", v.Parent.Name)
             return v.Parent
         elseif v:FindFirstChild("Model") then
             if v.Model:FindFirstChild("Model") then
-                print("got chunker", v.Parent.Name)
+                print("got chunker: ", v.Parent.Name)
                 return v.Parent
             elseif v.Model:FindFirstChild("Meshes/Gem Box1_Circle.005") then
-                print("got chunker", v.Parent.Name)
+                print("got chunker: ", v.Parent.Name)
                 return v.Parent
             end
         elseif v:FindFirstChild("Meshes/bgscoin14") then
-            print("got chunker", v.Parent.Name)
+            print("got chunker: ", v.Parent.Name)
             return v.Parent
         end
     end
@@ -104,14 +104,6 @@ local GetChunkerButton = MainTab:CreateButton({
     Name = "Get Chunker",
     Callback = function()
         correctChunkerVar = getCorrectChunker()
-        if correctChunkerVar ~= nil then
-            Rayfield:Notify({
-                Title = "Got Chunker Folder",
-                Content = "Auto Coins will work now.",
-                Duration = 6.5,
-                Image = 4483362458,
-             })
-        end
     end,
  })
 
