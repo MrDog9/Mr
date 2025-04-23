@@ -1,80 +1,143 @@
-local rifts = game.workspace:WaitForChild("Rendered"):WaitForChild("Rifts")
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local renderedFolder = game.workspace:WaitForChild("Rendered")
+
+local correctChunkerVar = nil
+
+local CoinPickupEvent = game.ReplicatedStorage.Remotes.Pickups.CollectPickup
+
+
+local rifts = renderedFolder:WaitForChild("Rifts")
 
 local player = game.Players.LocalPlayer
 local playerName = player.Name
 
-local function getTimestampWebhook()
-    return os.date("!%Y-%m-%dT%H:%M:%SZ")
+local AutoCoins = false
+
+local riftEsp = false
+
+local function getCorrectChunker()
+    for i, v in pairs(renderedFolder:GetDescendants()) do
+        if v:FindFirstChild("Meshes/bgscoin17_Cube.001") or v:FindFirstChild("Meshes/bgscoin14") then
+            print("got chunker", v.Parent.Name)
+            return v.Parent
+        elseif v:FindFirstChild("Meshes/bgscoin15_Cube.002") then
+            print("got chunker", v.Parent.Name)
+            return v.Parent
+        elseif v:FindFirstChild("Meshes/no way this gem will look normal4") then
+            print("got chunker", v.Parent.Name)
+            return v.Parent
+        elseif v:FindFirstChild("Model") then
+            if v.Model:FindFirstChild("Model") then
+                print("got chunker", v.Parent.Name)
+                return v.Parent
+            elseif v.Model:FindFirstChild("Meshes/Gem Box1_Circle.005") then
+                print("got chunker", v.Parent.Name)
+                return v.Parent
+            end
+        elseif v:FindFirstChild("Meshes/bgscoin14") then
+            print("got chunker", v.Parent.Name)
+            return v.Parent
+        end
+    end
 end
 
-local embedColor = 16711680
-
-local contentMessage = "@everyone"
-
-local HttpService = game:GetService("HttpService")
-
-local webhookURL = ""
-
-if playerName == "ItzMrDog" then
-    webhookURL = "https://discord.com/api/webhooks/1361623623147847923/DVqT-9p-0lV_eDwBu7SKHrxx6gS6ZoDX81wNhgPVaRqLMu1BoWiDcf05sN3dYtrE5UTj"
-elseif playerName == "Yani_idk1" then
-    webhookURL = "https://discord.com/api/webhooks/1361393269048869116/6EUHjjUjVPSL9Rp-ilJoKHfKJy2gPCx9LvDh-qSo5bkqTLa7ktOddCUnsfa4b8lAcReo"
+local function esp(island)
+    local decor = island:FindFirstChild("Decoration")
+    if decor:FindFirstChild("Meshes/floatingisland1_Circle.003") then
+        if not decor:FindFirstChild("Meshes/floatingisland1_Circle.003"):FindFirstChild("BillboardGui") then
+            local bbGui = Instance.new("BillboardGui")
+            bbGui.Size = UDim2.new(0,100,0,100)
+            bbGui.AlwaysOnTop = true
+            bbGui.StudsOffset = Vector3.new(0,5,0)
+            local textlabel = Instance.new("TextLabel")
+            textlabel.Size = UDim2.new(1,0,1,0)
+            textlabel.Text = island.Name
+            textlabel.TextColor3 = Color3.new(210, 97, 255)
+            textlabel.TextScaled = true
+            textlabel.BackgroundTransparency = 1
+            textlabel.Parent = bbGui
+            bbGui.Parent = decor:FindFirstChild("Meshes/floatingisland1_Circle.003")
+        end
+    end
 end
 
-local function sendEggWebhook(egg, luck, time, height)
-    local data = {
-        username = "Egg Webhook",
-        avatar_url = "https://cdn.discordapp.com/avatars/1335683455471718412/a_dd829b3d91ebd074581b2719dd020ba4.gif?size=1024",
-        content = contentMessage,
-        embeds = {
-            {
-                title = egg.." Egg in ".. playerName.. "'s Server!",
-                color = embedColor,
-                fields = {
-                    { name = "Luck", value = luck, inline = true },
-                    { name = "Time", value = time, inline = true },
-                    { name = "Height", value = height, inline = true }
-                },
-                footer = { text = "BGSI Script" },
-                timestamp = getTimestampWebhook()
-            }
-        }
+local Window = Rayfield:CreateWindow({
+    Name = "Rift Hub",
+    Icon = 0, -- Icon in Topbar. Can use Lucide Icons (string) or Roblox Image (number). 0 to use no icon (default).
+    LoadingTitle = "BGSI Rifts Hub",
+    LoadingSubtitle = "by Mr Dog",
+    Theme = "Default", -- Check https://docs.sirius.menu/rayfield/configuration/themes
+ 
+    DisableRayfieldPrompts = false,
+    DisableBuildWarnings = false, -- Prevents Rayfield from warning when the script has a version mismatch with the interface
+ 
+    ConfigurationSaving = {
+       Enabled = true,
+       FolderName = nil, -- Create a custom folder for your hub/game
+       FileName = "Mr Hub"
+    },
+ 
+    Discord = {
+       Enabled = false, -- Prompt the user to join your Discord server if their executor supports it
+       Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ ABCD would be ABCD
+       RememberJoins = true -- Set this to false to make them join the discord every time they load it up
+    },
+ 
+    KeySystem = false, -- Set this to true to use our key system
+    KeySettings = {
+       Title = "Untitled",
+       Subtitle = "Key System",
+       Note = "No method of obtaining the key is provided", -- Use this to tell the user how to get a key
+       FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+       SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+       GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+       Key = {"Hello"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
     }
-    local jsonData = HttpService:JSONEncode(data)
-    local reqFunc = (syn and syn.request) or (http and http.request) or request
-    if reqFunc then
-        pcall(function()
-            reqFunc({ Url = webhookURL, Method = "POST", Headers = { ["Content-Type"] = "application/json" }, Body = jsonData })
-        end)
-    else
-        warn("HTTP request function not found!")
+})
+
+local MainTab = Window:CreateTab("Main Tab", 4483362458) -- Title, Image
+local RiftsTab = Window:CreateTab("Rifts Tab", 4483362458) -- Title, Image
+
+local GetChunkerButton = MainTab:CreateButton({
+    Name = "Get Chunker",
+    Callback = function()
+        correctChunkerVar = getCorrectChunker()
+    end,
+ })
+
+local AutoCoinsToggle = MainTab:CreateToggle({
+    Name = "Auto Collect Coins",
+    CurrentValue = false,
+    Flag = "AutoCoins", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+        AutoCoins = Value
+    end,
+})
+
+local RiftEspToggle = RiftsTab:CreateToggle({
+    Name = "Rift Esp",
+    CurrentValue = false,
+    Flag = "RiftEsp", -- A flag is the identifier for the configuration file, make sure every element has a different flag if you're using configuration saving to ensure no overlaps
+    Callback = function(Value)
+        riftEsp = Value
+    end,
+})
+
+while wait() do
+    if AutoCoins then
+        if correctChunkerVar ~= nil then
+            for i, v in pairs(correctChunkerVar:GetChildren()) do
+                CoinPickupEvent:FireServer(v.Name)
+                v:Destroy()
+            end
+        else
+            print("Chunker not found.")
+        end
+    end
+    if riftEsp then
+        for i, v in pairs(rifts:GetChildren()) do
+            esp(v)
+        end
     end
 end
-
-local function riftEgg(egg, name)
-    local display = egg:WaitForChild("Display")
-    local sfGui = display:WaitForChild("SurfaceGui")
-    local luck = sfGui:WaitForChild("Icon"):WaitForChild("Luck").Text
-    local time = sfGui:WaitForChild("Timer").Text
-    local height = (tostring(math.round(display.CFrame.Y + 7)).."m")
-    print(name, luck, time, height)
-    sendEggWebhook(name, luck, time, height)
-
-end
-
-rifts.ChildAdded:Connect(function(child)
-    print(child.Name)
-    if child.Name == "event-2" then
-        riftEgg(child, "Pastel")
-    --[[
-    elseif child.Name == "nightmare-egg" then
-        riftEgg(child, "Nightmare")
-    elseif child.Name == "rainbow-egg" then
-        riftEgg(child, "Rainbow")
-    elseif child.Name == "void-egg" then
-        riftEgg(child, "Void")
-    ]]
-    elseif child.Name == "event-1" then
-        riftEgg(child, "Bunny")
-    end
-end)
