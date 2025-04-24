@@ -22,40 +22,26 @@ local riftEsp = false
 
 local function getCorrectChunker()
     for i, v in pairs(renderedFolder:GetDescendants()) do
-        if v:FindFirstChild("Meshes/bgscoin17_Cube.001") or v:FindFirstChild("Meshes/bgscoin14") then
-            if v.Parent.Locked == false then
+        if v:FindFirstChild("Meshes/bgscoin17_Cube.001") or v:FindFirstChild("Meshes/bgscoin14") then 
                 print("got chunker: ", v.Parent.Name)
                 return v.Parent
-            end
         elseif v:FindFirstChild("Meshes/bgscoin15_Cube.002") then
-            if v.Parent.Locked == false then
                 print("got chunker: ", v.Parent.Name)
                 return v.Parent
-            end
         elseif v:FindFirstChild("Meshes/no way this gem will look normal4") then
-            if v.Parent.Locked == false then
                 print("got chunker: ", v.Parent.Name)
                 return v.Parent
-            end
         elseif v:FindFirstChild("Model") then
             if v.Model:FindFirstChild("Model") then
-                if v.Name ~= "roayl-chest" then
-                    if v.Parent.Locked == false then
-                        print("got chunker: ", v.Parent.Name)
-                        return v.Parent
-                    end
-                end
-            elseif v.Model:FindFirstChild("Meshes/Gem Box1_Circle.005") then
-                if v.Parent.Locked == false then
                     print("got chunker: ", v.Parent.Name)
                     return v.Parent
-                end
-            end
-        elseif v:FindFirstChild("Meshes/bgscoin14") then
-            if v.Parent.Locked == false then
+            elseif v.Model:FindFirstChild("Meshes/Gem Box1_Circle.005") then
                 print("got chunker: ", v.Parent.Name)
                 return v.Parent
             end
+        elseif v:FindFirstChild("Meshes/bgscoin14") then
+                print("got chunker: ", v.Parent.Name)
+                return v.Parent
         end
     end
     return nil 
